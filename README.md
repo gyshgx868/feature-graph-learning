@@ -2,7 +2,7 @@
 
 This repository is the official MATLAB implementation of the following paper:
 
-Wei Hu, Xiang Gao, Gene Cheung, Zongming Guo, "Feature Graph Learning for 3D Point Cloud Denoising," IEEE Transactions on Signal Processing (TSP), February, 2020.
+Wei Hu, Xiang Gao, Gene Cheung, Zongming Guo, "Feature Graph Learning for 3D Point Cloud Denoising," accepted to IEEE Transactions on Signal Processing (TSP), March, 2020.
 
 # Usage
 
@@ -25,6 +25,7 @@ Please cite our paper if you use any part of the code from this repository:
   title={Feature Graph Learning for 3D Point Cloud Denoising},
   author={Hu, Wei and Gao, Xiang and Cheung, Gene and Guo, Zongming},
   journal={IEEE Transactions on Signal Processing (TSP)},
+  month={March},
   year={2020}
 }
 ```
