@@ -1,0 +1,79 @@
+warning off;
+dbstop if error;
+rand('seed', 255);
+clear;
+clc;
+
+%% prepare save folders
+config_dir = './config';
+if ~exist(config_dir, 'dir')
+  mkdir(config_dir);
+end
+save_dir = './results';
+log_file = fullfile(save_dir, 'log.txt');
+if ~exist(save_dir, 'dir')
+  mkdir(save_dir);
+end
+
+%% denoise models
+model_names = ["anchor", "daratech", "dc", "gargoyle", "lordquas"];
+for i = 1 : 5
+  model_name = char(model_names(i));
+  gt_name = ['./models/gt/', model_name, '_GT.ply'];
+  noise_level = num2str(0.05);
+  noise_name = ['./models/noise/', model_name, '_gaussian_noise_', noise_level, '.ply'];
+
+  % check if the parameter configuration file exists
+  config_file = [model_name, '_', noise_level, '.mat'];
+  config_file = fullfile(config_dir, config_file);
+  if ~exist(config_file, 'file')
+    kMaxIteration = 30;
+    kDownSampleRate = 0.3;
+    kPatchSize = 9;
+    kPatchNeighborCount = 10;
+    kChangeTolerance = 5e-5;
+
+    alpha = 25.0 * (exp((1:kMaxIteration) / 20) - 1);
+    alpha = repmat(alpha, 5, 1);
+    alpha = reshape(alpha, 5 * kMaxIteration, 1);
+
+    use_matlab_down_sample = false;
+    use_normal = true;
+    use_cosine = false;
+    use_color = false;
+    C = 5;
+    save_iter_cloud = false;
+
+    save(config_file, ...
+      'kMaxIteration', ...
+      'kDownSampleRate', ...
+      'kPatchSize', ...
+      'kPatchNeighborCount', ...
+      'kChangeTolerance', ...
+      'alpha', ...
+      'use_matlab_down_sample', ...
+      'use_normal', ...
+      'use_cosine', ...
+      'use_color', ...
+      'C', ...
+      'save_iter_cloud');
+  else
+    load(config_file);
+  end
+
+  gt_cloud = pcread(gt_name);
+  noisy_cloud = pcread(noise_name);
+  [best_mse, best_snr, max_iterations] = denoise_with_learning( ...
+    noisy_cloud, gt_cloud, model_name, ...
+    kMaxIteration, kChangeTolerance, ...
+    kDownSampleRate, kPatchSize, kPatchNeighborCount, ...
+    alpha, ...
+    use_matlab_down_sample, ...
+    use_normal, ...
+    use_cosine, ...
+    use_color, ...
+    C, ...
+    save_iter_cloud, ...
+    log_file, ...
+    save_dir);
+end
