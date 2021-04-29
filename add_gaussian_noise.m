@@ -1,10 +1,9 @@
 function add_gaussian_noise(cloud, shapename, variance)
   pts = cloud.Location;
   SAMPLING_SET = 200;
-  srf = struct('X', pts(:, 1), 'Y', pts(:, 2), 'Z', pts(:, 3));
   % estimate diameter
-  ifps = fps_euc(srf, SAMPLING_SET);
-  Dfps = pdist2(pts(ifps, :), pts(ifps, :));
+  sampled = down_sample(cloud, SAMPLING_SET);
+  Dfps = pdist2(pts, sampled.Location);
   diam = sqrt(max(Dfps(:)));
 
   sig = diam * variance;

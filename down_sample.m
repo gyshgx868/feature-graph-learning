@@ -1,6 +1,6 @@
 function [new_cloud] = down_sample(origin, size)
   current_idx = 1; % unidrnd(origin.Count);
-  result = zeros(1,min(origin.Count,size));
+  result = zeros(1, min(origin.Count, size));
   d = inf(1, origin.Count);
   for i = 1 : size
     d2 = pdist2(origin.Location(current_idx, :), origin.Location)';
