@@ -3,7 +3,7 @@ function add_gaussian_noise(cloud, shapename, variance)
   SAMPLING_SET = 200;
   % estimate diameter
   sampled = down_sample(cloud, SAMPLING_SET);
-  Dfps = pdist2(pts, sampled.Location);
+  Dfps = pdist2(sampled.Location, sampled.Location);
   diam = sqrt(max(Dfps(:)));
 
   sig = diam * variance;
